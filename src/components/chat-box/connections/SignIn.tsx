@@ -7,15 +7,21 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 
-import type { MouseEventHandler } from "react";
-import { useChatState } from "../ChatContextProvider";
+import { useState, type ChangeEvent, type MouseEventHandler } from "react";
+import {
+  useChatDispatch,
+  useChatState,
+  type ChatStateAction,
+} from "../ChatContextProvider";
 
 function SignIn({
   handleSignIn,
 }: {
   handleSignIn: MouseEventHandler<HTMLButtonElement>;
 }) {
-  const { error } = useChatState();
+  const { error, credentials } = useChatState();
+  const dispatch = useChatDispatch();
+  const [showPassword, setShowPassword] = useState<boolean>(false);
 
   return (
     <div className="flex flex-col">
@@ -27,11 +33,56 @@ function SignIn({
           <DialogHeader>
             <DialogTitle>Lets Start Chatting!</DialogTitle>
             <DialogDescription>
-              Sign in to experience communication via text!
+              An account will be created for you automatically, if you don't
+              already have one.
             </DialogDescription>
           </DialogHeader>
+          <label htmlFor="username" className="pl-1 hidden">
+            Username
+          </label>
+          <input
+            type="text"
+            name="username"
+            className="border p-2 rounded-md"
+            placeholder="Username"
+            onChange={(e: ChangeEvent) => {
+              const { value } = e.currentTarget as HTMLInputElement;
+              dispatch({
+                type: "UPDATE_CREDENTIALS",
+                payload: { username: value, password: credentials.password },
+              } as ChatStateAction);
+            }}
+            value={credentials.username}
+          />
+          <div className="flex w-full gap-x-1">
+            <label htmlFor="password" className="pl-1 hidden">
+              Password
+            </label>
+            <input
+              type={showPassword ? "text" : "password"}
+              name="password"
+              className="border p-2 rounded-md w-full"
+              placeholder="Password"
+              onChange={(e: ChangeEvent) => {
+                const { value } = e.currentTarget as HTMLInputElement;
+                dispatch({
+                  type: "UPDATE_CREDENTIALS",
+                  payload: { username: credentials.username, password: value },
+                } as ChatStateAction);
+              }}
+              value={credentials.password}
+            />
+            <button
+              onClick={() => {
+                setShowPassword(!showPassword);
+              }}
+              className={"p-2 border hover:bg-neutral-200 rounded-md"}
+            >
+              {showPassword ? "show" : "hide"}
+            </button>
+          </div>
           <button
-            className={"px-2 border hover:bg-neutral-200"}
+            className={"p-2 border hover:bg-neutral-200 rounded-md"}
             onClick={handleSignIn}
           >
             Sign in

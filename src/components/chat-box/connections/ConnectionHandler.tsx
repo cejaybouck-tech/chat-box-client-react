@@ -19,15 +19,20 @@ function ConnectionHandler() {
       /* save WebSocket to our state for components to access */
       dispatch({ type: "INITIALIZE_SOCKET", payload: ws } as ChatStateAction);
 
-      /* on open update who is online */
       ws.onopen = () => {
-        //send authentication here
-        //ws?.send
+        /* create authentication message */
+        const authMessage = JSON.stringify({
+          type: "authenticate",
+          username: chatState.credentials.username,
+          password: chatState.credentials.password,
+        });
+
+        /* send authentication message */
+        ws?.send(authMessage);
         dispatch({
           type: "UPDATE_IS_LOADING",
           payload: false,
         } as ChatStateAction);
-        //todo: update state with connected chatters
       };
 
       /* update chat box or who is online on message from server */
