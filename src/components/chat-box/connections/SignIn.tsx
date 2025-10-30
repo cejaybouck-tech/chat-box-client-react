@@ -7,7 +7,6 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import type { MouseEventHandler } from "react";
 import { useChatState } from "../ChatContextProvider";
 
@@ -28,25 +27,15 @@ function SignIn({
           <DialogHeader>
             <DialogTitle>Lets Start Chatting!</DialogTitle>
             <DialogDescription>
-              Sign in or create a account to get chatting!
+              Sign in to experience communication via text!
             </DialogDescription>
           </DialogHeader>
-          {/* Sign in and create tabs */}
-          <Tabs defaultValue="sign-in" className="w-[400px]">
-            <TabsList>
-              <TabsTrigger value="sign-in">Sign-in</TabsTrigger>
-              <TabsTrigger value="create">Create Account</TabsTrigger>
-            </TabsList>
-            <TabsContent value="sign-in">
-              <button
-                className={"px-2 border hover:bg-neutral-200"}
-                onClick={handleSignIn}
-              >
-                Sign in
-              </button>
-            </TabsContent>
-            <TabsContent value="create">Change your password here.</TabsContent>
-          </Tabs>
+          <button
+            className={"px-2 border hover:bg-neutral-200"}
+            onClick={handleSignIn}
+          >
+            Sign in
+          </button>
         </DialogContent>
       </Dialog>
       {error && (
