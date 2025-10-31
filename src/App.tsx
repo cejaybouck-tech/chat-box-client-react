@@ -13,12 +13,12 @@ import {
 
 function App() {
   return (
-    <main className="h-screen w-full p-2 md:p-10 lg:p-20">
-      <Card className="w-full h-full rounded-xl flex flex-col items-center bg-neutral-1 00">
+    <main className="h-dvh w-full p-2 md:p-10 lg:p-20">
+      <Card className="w-full h-full rounded-xl flex flex-col items-center">
         <CardHeader className="w-full text-center">
           <CardTitle className="text-3xl">Welcome to basic chat box!</CardTitle>
         </CardHeader>
-        <CardContent className="w-full h-full p-4">
+        <CardContent className="w-full p-4 h-full">
           <ChatContextProvider>
             <ChatBoxContainer />
           </ChatContextProvider>

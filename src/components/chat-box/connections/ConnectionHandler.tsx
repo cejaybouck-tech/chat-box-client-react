@@ -4,6 +4,7 @@ import {
   useChatState,
   type ChatStateAction,
 } from "../ChatContextProvider";
+import { Spinner } from "@/components/ui/spinner";
 
 function ConnectionHandler() {
   const chatState = useChatState();
@@ -36,14 +37,30 @@ function ConnectionHandler() {
       };
 
       /* update chat box or who is online on message from server */
+      {
+        // chatterName: string;
+        // message: string;
+        // timeStamp: Date;
+      }
       ws.onmessage = (event: MessageEvent<string>) => {
+        const message = JSON.parse(event.data) as {
+          username: string;
+          message: string;
+        };
+        dispatch({
+          type: "ADD_TO_CHAT_LOG",
+          payload: {
+            chatterName: message.username,
+            message: message.message,
+            timeStamp: new Date(),
+          },
+        } as ChatStateAction);
         //todo: add update logins if response is approved authentication.
         //todo: add message to chatbox if response is a message.
         console.log("Received Message:");
         console.log(event.data);
       };
 
-      /* attempt recconect if connection fails */
       ws.onclose = (event) => {
         dispatch({
           type: "UPDATE_IS_LOADING",
@@ -79,11 +96,15 @@ function ConnectionHandler() {
   return (
     <div className="flex flex-wrap gap-x-2 w-full">
       {chatState.isLoading ? (
-        <p className="px-4 animate-pulse border w-full rounded-lg text-lg">
-          Connecting to server...
-        </p>
+        <div className="px-4 flex items-center gap-x-2  border w-full rounded-lg ">
+          <Spinner />
+          <p className="text-lg">Connecting to server...</p>
+        </div>
       ) : (
-        <p>loaded</p>
+        <div className="flex flex-col w-full">
+          <p className="text-2xl bold">whos online</p>
+          <div className="flex-wrap gap-x-2 gap-y-2 border rounded-lg p-4 w-full text-lg"></div>
+        </div>
       )}
     </div>
   );
