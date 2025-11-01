@@ -36,29 +36,53 @@ function ConnectionHandler() {
         } as ChatStateAction);
       };
 
-      /* update chat box or who is online on message from server */
-      {
-        // chatterName: string;
-        // message: string;
-        // timeStamp: Date;
-      }
       ws.onmessage = (event: MessageEvent<string>) => {
-        const message = JSON.parse(event.data) as {
-          username: string;
-          message: string;
-        };
-        dispatch({
-          type: "ADD_TO_CHAT_LOG",
-          payload: {
-            chatterName: message.username,
-            message: message.message,
-            timeStamp: new Date(),
-          },
-        } as ChatStateAction);
-        //todo: add update logins if response is approved authentication.
-        //todo: add message to chatbox if response is a message.
-        console.log("Received Message:");
-        console.log(event.data);
+        const message = JSON.parse(event.data);
+        console.log(message);
+
+        //handle errors
+        if (message.type === "auth_response") {
+          dispatch({
+            type: "ADD_ERROR",
+            payload: message.message,
+          } as ChatStateAction);
+          return;
+        }
+
+        //Update initial users
+        if (message.type === "users" && Array.isArray(message.users)) {
+          dispatch({
+            type: "UPDATE_CONNECTIONS",
+            payload: message.users,
+          } as ChatStateAction);
+          return;
+        }
+
+        //handle user join
+        if (message.type === "user_joined") {
+          dispatch({ type: "ADD_CONNECTION", payload: message.username });
+          return;
+        }
+
+        //handle user leave
+        if (message.type === "user_left") {
+          dispatch({ type: "REMOVE_CONNECTION", payload: message.username });
+          return;
+        }
+
+        //handle chat message
+        if (message.type === "message" && typeof message.message === "string") {
+          dispatch({
+            type: "ADD_TO_CHAT_LOG",
+            payload: {
+              chatterName: message.username,
+              message: message.message,
+              timeStamp: new Date(),
+            },
+          } as ChatStateAction);
+
+          return;
+        }
       };
 
       ws.onclose = (event) => {
@@ -74,7 +98,7 @@ function ConnectionHandler() {
         console.log(event);
       };
 
-      /* Show error is we fail to load and allow users to attempt login again */
+      /* Show error if we fail to load and allow users to attempt login again */
       ws.onerror = (error) => {
         console.log("WebSocket Error:", error);
         dispatch({

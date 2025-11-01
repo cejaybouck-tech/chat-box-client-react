@@ -16,7 +16,12 @@ function MessagesContainer() {
     if (message === "") return;
     setIsSending(true);
     if (state.webSocket && state.isConnected && !state.isLoading) {
-      state.webSocket.send(message);
+      const payload = {
+        type: "message",
+        username: state.credentials.username,
+        message: message,
+      };
+      state.webSocket.send(JSON.stringify(payload));
       setMessage("");
     } else {
       console.log("Not connected to WebSocket server");

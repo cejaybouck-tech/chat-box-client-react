@@ -15,7 +15,7 @@ export const ChatDispatchContext = createContext<
 export interface ChatState {
   isConnected: boolean;
   chatLog: Array<ChatMessage>; //todo: create and change to Chat interface
-  chattersOnline: Array<Connection>; //todo: create and change to Chatters interface
+  chattersOnline: Array<string>; //todo: create and change to Chatters interface
   credentials: Credentials;
   isLoading: boolean;
   webSocket: WebSocket | null;
@@ -28,11 +28,6 @@ export interface ChatMessage {
   timeStamp: Date;
 }
 
-export interface Connection {
-  name: string;
-  color: string;
-}
-
 export interface Credentials {
   username: string;
   password: string;
@@ -41,8 +36,9 @@ export interface Credentials {
 export type ChatStateAction =
   | { type: "UPDATE_IS_CONNECTED"; payload: boolean }
   | { type: "ADD_TO_CHAT_LOG"; payload: ChatMessage }
-  | { type: "ADD_CONNECTION"; payload: Connection }
-  | { type: "REMOVE_CONNECTION"; payload: Connection }
+  | { type: "UPDATE_CONNECTIONS"; payload: string[] }
+  | { type: "ADD_CONNECTION"; payload: string }
+  | { type: "REMOVE_CONNECTION"; payload: string }
   | { type: "UPDATE_CREDENTIALS"; payload: Credentials }
   | { type: "UPDATE_IS_LOADING"; payload: boolean }
   | { type: "INITIALIZE_SOCKET"; payload: WebSocket }
@@ -62,6 +58,11 @@ function ChatStateReducer(state: ChatState, action: ChatStateAction) {
       return { ...state, chatLog: newChatLog };
     }
 
+    case "UPDATE_CONNECTIONS": {
+      const newConnections = [...action.payload];
+      return { ...state, chattersOnline: newConnections };
+    }
+
     case "ADD_CONNECTION": {
       const newConnections = [...state.chattersOnline];
       newConnections.push(action.payload);
@@ -69,8 +70,8 @@ function ChatStateReducer(state: ChatState, action: ChatStateAction) {
     }
 
     case "REMOVE_CONNECTION": {
-      const newConnections = state.chattersOnline.filter((chatter) => {
-        action.payload.name !== chatter.name;
+      const newConnections = state.chattersOnline.filter((name) => {
+        action.payload !== name;
       });
       return { ...state, chattersOnline: newConnections };
     }
