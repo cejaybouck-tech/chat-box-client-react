@@ -45,7 +45,11 @@ function MessagesContainer() {
           state.chatLog.map((message, index) => {
             return (
               <div key={"message-" + index} className="flex gap-x-1 text-lg">
-                <p className="font-bold">{`${message.chatterName}:`}</p>
+                {message.chatterName ? (
+                  <p className="font-bold">{`${message.chatterName}:`}</p>
+                ) : (
+                  ""
+                )}
                 <p>{message.message}</p>
               </div>
             );
@@ -60,12 +64,11 @@ function MessagesContainer() {
           <label htmlFor="chat-input" className="mt-4 pl-2 text-lg hidden">
             Chat Input
           </label>
-          <textarea
+          <input
             id="chat-input"
-            cols={3}
             className="border rounded-2xl mt-2 p-2 resize-none"
             value={message}
-            onChange={(event: ChangeEvent<HTMLTextAreaElement>) => {
+            onChange={(event: ChangeEvent<HTMLInputElement>) => {
               setMessage(event.currentTarget.value);
             }}
             onKeyDown={(e) => {

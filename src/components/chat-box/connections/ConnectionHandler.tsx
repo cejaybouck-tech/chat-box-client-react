@@ -60,12 +60,29 @@ function ConnectionHandler() {
 
         //handle user join
         if (message.type === "user_joined") {
+          dispatch({
+            type: "ADD_TO_CHAT_LOG",
+            payload: {
+              chatterName: "",
+              message: `${message.username} has joined the chat.`,
+              timeStamp: new Date(),
+            },
+          } as ChatStateAction);
+          if (message.username === chatState.credentials.username) return;
           dispatch({ type: "ADD_CONNECTION", payload: message.username });
           return;
         }
 
         //handle user leave
         if (message.type === "user_left") {
+          dispatch({
+            type: "ADD_TO_CHAT_LOG",
+            payload: {
+              chatterName: "",
+              message: `${message.username} has left the chat.`,
+              timeStamp: new Date(),
+            },
+          } as ChatStateAction);
           dispatch({ type: "REMOVE_CONNECTION", payload: message.username });
           return;
         }
@@ -127,7 +144,18 @@ function ConnectionHandler() {
       ) : (
         <div className="flex flex-col w-full">
           <p className="text-2xl bold">whos online</p>
-          <div className="flex-wrap gap-x-2 gap-y-2 border rounded-lg p-4 w-full text-lg"></div>
+          <div className="flex flex-wrap gap-x-2 gap-y-2 border rounded-lg p-4 text-lg">
+            {chatState.chattersOnline.map((user, index) => {
+              return (
+                <p
+                  key={"user-" + index}
+                  className="bg-gray-200 border-gray-300 p-2 border rounded-md"
+                >
+                  {user}
+                </p>
+              );
+            })}
+          </div>
         </div>
       )}
     </div>
