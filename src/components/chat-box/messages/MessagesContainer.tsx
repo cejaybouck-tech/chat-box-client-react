@@ -1,4 +1,4 @@
-import React, { useState, type ChangeEvent } from "react";
+import { useEffect, useRef, useState, type ChangeEvent } from "react";
 import { useChatState } from "../ChatContextProvider";
 import { Spinner } from "@/components/ui/spinner";
 
@@ -6,8 +6,11 @@ function MessagesContainer() {
   const state = useChatState();
   const [message, setMessage] = useState<string>("");
   const [isSending, setIsSending] = useState<boolean>(false);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  const serverURL = import.meta.env.ServerURL;
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [state.chatLog]);
 
   const sendMessage = () => {
     if (message === "") return;
@@ -26,10 +29,10 @@ function MessagesContainer() {
   };
 
   return (
-    <section className="w-full h-full flex flex-col max-w-[800px]">
+    <section className="w-full h-full min-h-0 flex flex-col max-w-[800px]">
       {/* chat box */}
       <div
-        className={`overflow-y-scroll flex flex-col h-full w-full border p-4 px-6 rounded-2xl ${
+        className={`flex-1 min-h-0 overflow-y-scroll flex flex-col w-full border p-4 px-6 rounded-2xl ${
           isConnected() ? "" : "justify-center items-center"
         }`}
       >
@@ -45,6 +48,7 @@ function MessagesContainer() {
         ) : (
           <p className="text-neutral-600">Please Sign in to start chatting.</p>
         )}
+        <div ref={messagesEndRef} />
       </div>
       {!state.isLoading && (
         <div className="flex flex-col">

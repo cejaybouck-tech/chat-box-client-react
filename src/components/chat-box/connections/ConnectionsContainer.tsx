@@ -16,13 +16,11 @@ function ConnectionsContainer() {
   };
 
   return (
-    <section className="mt-4 w-full max-w-[800px]">
+    <section className="mt-4 flex w-full max-w-[800px]">
       {!isConnected ? (
         <SignIn handleSignIn={handleSignInAttempt} />
       ) : (
-        <div>
-          <ConnectionHandler />
-        </div>
+        <ConnectionHandler />
       )}
     </section>
   );

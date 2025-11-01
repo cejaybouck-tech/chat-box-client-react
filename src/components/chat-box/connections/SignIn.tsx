@@ -24,7 +24,7 @@ function SignIn({
   const [showPassword, setShowPassword] = useState<boolean>(false);
 
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col w-full">
       <Dialog>
         <DialogTrigger className="border px-4 py-2 bg-blue-700 rounded-2xl text-white">
           Sign In

@@ -1,15 +1,7 @@
 import "./App.css";
 import ChatBoxContainer from "./components/chat-box/ChatBoxContainer";
 import ChatContextProvider from "./components/chat-box/ChatContextProvider";
-import {
-  Card,
-  CardAction,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "./components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "./components/ui/card";
 
 function App() {
   return (
@@ -18,7 +10,7 @@ function App() {
         <CardHeader className="w-full text-center">
           <CardTitle className="text-3xl">Welcome to basic chat box!</CardTitle>
         </CardHeader>
-        <CardContent className="w-full p-4 h-full">
+        <CardContent className="w-full p-4 flex-1 min-h-0 overflow-hidden">
           <ChatContextProvider>
             <ChatBoxContainer />
           </ChatContextProvider>
