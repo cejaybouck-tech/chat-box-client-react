@@ -38,7 +38,6 @@ function ConnectionHandler() {
 
       ws.onmessage = (event: MessageEvent<string>) => {
         const message = JSON.parse(event.data);
-        console.log(message);
 
         //handle errors
         if (message.type === "auth_response") {
